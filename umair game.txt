@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umair’s Roblox Birthday Quest</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#00a2ff, #0055aa);
+    text-align: center;
+    color: white;
+  }
+
+  h1 {
+    margin-top: 15px;
+    font-size: 26px;
+  }
+
+  #countdown {
+    font-size: 60px;
+    margin-top: 40px;
+    font-weight: bold;
+  }
+
+  #game-area {
+    display: none;
+    position: relative;
+    width: 95%;
+    max-width: 360px;
+    height: 360px;
+    margin: 20px auto;
+    background: #1b1b1b;
+    border-radius: 20px;
+    border: 4px solid #00ff00;
+  }
+
+  .item {
+    position: absolute;
+    font-size: 36px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  #message {
+    font-size: 18px;
+    margin: 10px;
+  }
+
+  button {
+    padding: 12px 22px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    background: #00ff00;
+    color: black;
+    cursor: pointer;
+    display: none;
+  }
+
+  button:hover {
+    background: #00cc00;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🎮 Umair’s Roblox Birthday Quest! 🎉</h1>
+<p>Get ready to help Umair collect his Roblox friends!</p>
+
+<div id="countdown">3</div>
+
+<div id="game-area"></div>
+
+<div id="message"></div>
+
+<button onclick="restartGame()">Play Again</button>
+
+<script>
+const characters = ["🧱🧍", "🧱🧑", "🧱🧒", "💎", "⭐"];
+let found = 0;
+let count = 3;
+
+// Built-in offline sound
+function playSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  osc.type = "square";
+  osc.frequency.value = 600;
+  osc.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+}
+
+// Countdown logic
+function startCountdown() {
+  const cd = document.getElementById("countdown");
+  cd.innerText = count;
+
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      cd.innerText = count;
+      playSound();
+    } else {
+      clearInterval(interval);
+      cd.innerText = "GO!";
+      playSound();
+      setTimeout(() => {
+        cd.style.display = "none";
+        startGame();
+      }, 700);
+    }
+  }, 1000);
+}
+
+function startGame() {
+  const gameArea = document.getElementById("game-area");
+  gameArea.style.display = "block";
+  gameArea.innerHTML = "";
+  found = 0;
+  document.getElementById("message").innerText = "Friends collected: 0 / 5";
+  document.querySelector("button").style.display = "none";
+
+  characters.forEach(char => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerText = char;
+    div.style.top = Math.random() * 300 + "px";
+    div.style.left = Math.random() * 300 + "px";
+
+    div.onclick = () => {
+      div.style.display = "none";
+      found++;
+      playSound();
+
+      if (found === characters.length) {
+        document.getElementById("message").innerHTML =
+          "🎉 HAPPY BIRTHDAY UMAIR! 🎂<br>You unlocked the Roblox Birthday Badge! 🏆";
+        document.body.style.background =
+          "linear-gradient(45deg, red, orange, yellow, green, blue)";
+        document.querySelector("button").style.display = "inline-block";
+      } else {
+        document.getElementById("message").innerText =
+          "Awesome! Friends collected: " + found + " / 5";
+      }
+    };
+
+    gameArea.appendChild(div);
+  });
+}
+
+function restartGame() {
+  count = 3;
+  document.getElementById("countdown").style.display = "block";
+  document.getElementById("game-area").style.display = "none";
+  document.body.style.background =
+    "linear-gradient(#00a2ff, #0055aa)";
+  startCountdown();
+}
+
+// Start automatically
+startCountdown();
+</script>
+
+</body>
+</html>
